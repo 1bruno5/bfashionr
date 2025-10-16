@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bevera | Smart Style Store</title>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: "Poppins", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: beige;
+      color: black;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: orange;
+    }
+
+    .search-box input[type="text"] {
+      padding: 8px;
+      border: 2px solid black;
+      border-radius: 4px;
+    }
+
+    .search-box input[type="submit"] {
+      padding: 8px 12px;
+      background-color: black;
+      color: orange;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .sign-in button, .cart-btn {
+      background-color: black;
+      color: orange;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .sign-in button, .sign-in {
+      background-color: black;
+      color: orange;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .hero {
+      background: linear-gradient(to right, orange, beige);
+      color: black;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      padding: 50px;
+    }
+
+    .product {
+      background-color: white;
+      border: 2px solid beige;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .product:hover {
+      transform: scale(1.03);
+    }
+
+    .product img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .product h3 {
+      margin-top: 10px;
+      color: black;
+    }
+
+    .buy-btn {
+      background-color: black;
+      color: orange;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .buy-btn:hover {
+      background-color: orange;
+      color: black;
+    }
+
+    /* 🛒 Cart Sidebar */
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 350px;
+      height: 100%;
+      background-color: beige;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+      transition: right 0.4s ease;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid orange;
+      padding-bottom: 10px;
+    }
+
+    .cart-items {
+      margin-top: 20px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+    }
+
+    .cart-footer {
+      border-top: 2px solid orange;
+      margin-top: 20px;
+      padding-top: 10px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: beige;
+      color: black;
+      text-align: center;
+      padding: 15px 0;
+      font-weight: bold;
+    }
+
+    /* 🔐 Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    .modal-content {
+      background-color: beige;
+      margin: 10% auto;
+      padding: 20px;
+      width: 300px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 90%;
+      padding: 10px;
+      margin: 6px 0;
+      border: 2px solid honeydew;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">🧥 B Fashion</div>
+
+    <div class="search-box">
+      <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search products...">
+        <input type="submit" value="Search">
+      </form>
+    </div>
+
+    <div>
+      <button class="cart-btn" onclick="toggleCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+      <button class="sign-in" onclick="openModal()">Sign In</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2>Welcome to B Fashion</h2>
+    <p>Your smartness is our priority — Discover your perfect look today!</p>
+  </section>
+
+  <main class="product-grid" id="productGrid"></main>
+
+  <!-- 🛒 Cart Sidebar -->
+  <div id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button onclick="toggleCart()">✖</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <h4>Total: $<span id="cartTotal">0.00</span></h4>
+      <div id="paypal-button-container"></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>📞 Contact: 0723666766 | 📧 abakundanyeb@gmail.com</p>
+    <p>&copy; <span id="year"></span> B Fashion. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID_HERE&currency=USD"></script>
+
+  <script>
+    const products = [
+      {name: "Running Shoes", price: 59.99, image: "download.jpg"},
+      {name: "Leather Jacket", price: 89.99, image: "jacket.jpg"},
+      {name: "Black Skinny Pants", price: 70.67, image: "pant.jpg"},
+      {name: "White Sneakers", price: 49.99, image: "download (1).jpg"},
+      {name: "Graphic T-Shirt", price: 19.99, image: "T-shirt.jpg"},
+      {name: "Denim Jacket", price: 74.99, image: "Tone.jpg"},
+      {name: "sweater", price: 50.99, image: "sweater.jpg"},
+      {name: "shirt", price: 25.99, image: "summer.jpg"},
+      {name: "bag", price: 20.90, image: "bag.jpg"},
+      {name: "baggy", price: 34.99, image: "www.jpg"},
+      {name: "shoes", price: 77.99, image: "gucci.jpg"},
+      {name: "sweater", price: 25.99, image: "york.jpg"},
+     
+      
+    ];
+
+    const productGrid = document.getElementById("productGrid");
+    const cartItemsContainer = document.getElementById("cartItems");
+    const cartTotalElem = document.getElementById("cartTotal");
+    const cartCountElem = document.getElementById("cartCount");
+    let cart = [];
+
+    function displayProducts(items) {
+      productGrid.innerHTML = "";
+      items.forEach((p, i) => {
+        productGrid.innerHTML += `
+          <div class="product">
+            <img src="${p.image}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>$${p.price.toFixed(2)}</p>
+            <button class="buy-btn" onclick="addToCart(${i})">Add to Cart</button>
+          </div>`;
+      });
+    }
+    displayProducts(products);
+
+    function addToCart(i) {
+      const p = products[i];
+      const existing = cart.find(x => x.name === p.name);
+      if (existing) existing.qty++;
+      else cart.push({...p, qty: 1});
+      updateCart();
+    }
+
+    function updateCart() {
+      cartItemsContainer.innerHTML = "";
+      let total = 0;
+      cart.forEach((item, i) => {
+        total += item.price * item.qty;
+        cartItemsContainer.innerHTML += `
+          <div class="cart-item">
+            <img src="${item.image}">
+            <div><strong>${item.name}</strong><br>$${item.price.toFixed(2)} × ${item.qty}</div>
+            <button onclick="removeItem(${i})" style="color:red;">✖</button>
+          </div>`;
+      });
+      cartTotalElem.textContent = total.toFixed(2);
+      cartCountElem.textContent = cart.length;
+    }
+
+    function removeItem(i) {
+      cart.splice(i, 1);
+      updateCart();
+    }
+
+    function toggleCart() {
+      document.getElementById("cartSidebar").classList.toggle("open");
+    }
+
+    // 🧾 PayPal Integration
+    paypal.Buttons({
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: cartTotalElem.textContent }
+          }]
+        });
+      },
+      onApprove: (data, actions) => {
+        return actions.order.capture().then(function(details) {
+          alert(`✅ Transaction completed by ${details.payer.name.given_name}!`);
+          cart = [];
+          updateCart();
+          toggleCart();
+        });
+      }
+    }).render('#paypal-button-container');
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
